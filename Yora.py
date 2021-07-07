@@ -8,6 +8,7 @@ from lib import api_caller as caller
 from lib import constants as c
 from enum import Enum
 
+
 logging.basicConfig(
     level=c.LOG_LEVEL,
     format=c.LOG_FORMAT,
@@ -15,6 +16,7 @@ logging.basicConfig(
     filemode = 'w',
     filename = 'api.log'
 )
+
 
 class StatusCode(Enum):
     unknown_error = 1
@@ -271,7 +273,7 @@ class API:
         market : str or int
             The ticker for the market, eg. 'GRC/AUD'
         direction : int or str
-            Whether the order is a buy or sell order specified by YoraLib.BUY, 0, or 'buy' (sell uses the same convention)
+            Whether the order is a buy or sell order specified by YoraLib.BUY, or YoraLib.SELL constants
         amount : float
             The amount of the currency to buy or sell
         price : float
@@ -295,22 +297,7 @@ class API:
                 return markets[0], None
             m_id = markets[1][market]['market_id']
 
-        if isinstance(direction, int):
-            while direction != 0 or direction != 1:
-                print("Invalid direction, must be 0 (buy), or 1 (sell)")
-                logging.warning("Invalid direction, must be 0 ('buy'), or 1 ('sell')")
-            dirct = direction
-
-        if isinstance(direction, str):
-            while direction != 'buy' or direction != 'sell':
-                print("Invalid direction, must be 0 (buy), or 1 (sell)")
-                logging.warning("Invalid direction, must be 0 ('buy'), or 1 ('sell')")
-            if direction == 'buy':
-                dirct = self.BUY
-            elif direction == 'sell':
-                dirct = self.SELL
-
-        response = self.__make_trade(self.__tkn, m_id, dirct, amount, price)
+        response = self.__make_trade(self.__tkn, m_id, dirction, amount, price)
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
@@ -340,7 +327,6 @@ class API:
         status_code = response.get('data').get('status_code')
         if status_code != StatusCode.ok.value:
             return status_code
-
 
 
     def get_address(self, currency):
@@ -427,7 +413,6 @@ class API:
         status_code = response.get('data').get('status_code')
         if status_code != StatusCode.ok.value:
             return status_code
-
 
 
     def withdraw_crypto(self, currency, amount, address):
@@ -592,6 +577,9 @@ class API:
             orders[i]['time'] = self.__unixtime_to_datetime(orders.get(i).get('time') / 1000)         # CHECK THIS FOR UNIXTIME
 
         return status_code, orders
+
+
+
 
     # private members
     def __check_http_code(self, response):                  # helper
