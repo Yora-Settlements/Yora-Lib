@@ -6,6 +6,7 @@ The documentation for the Yora public API can be accessed [here](https://api.yor
 * [Wiki](https://github.com/Yora-Settlements/Yora-Lib#getting-started)
 * [Getting started](https://github.com/Yora-Settlements/Yora-Lib#getting-started)
 * [Make a trade](https://github.com/Yora-Settlements/Yora-Lib#make-a-trade)
+* 
 
 ## Getting Started ##
 To start using the wrapper library, simply create a new file in the root directory and import the Yora.py module and create an API object. 
@@ -22,8 +23,10 @@ import Yora
 yora_api = Yora.API('email@email.com', 'password', True)
 ```
 
+
 ## Return Codes ##
 All API requests return a [Yora status code](https://github.com/Yora-Settlements/Yora-Lib#getting-started) and a response from the server. If the status code is non zero the resposne will be ```None``` indicating an error with the request.
+
 
 The library includes an Enum type for these codes to make error codes easier to read and properly handle.
 
@@ -40,7 +43,9 @@ trade_response = yora_api.trade('GRC/AUD', yora_api.BUY, 100, 0.5)
 if trade_response[0] == Yora.StatusCode.insufficient_funds.value:
   handle_error()
 ```
+
 This is done so the user has complete control over what happens to their program if an unexpected error occurs instead of the library simply exiting the program.
+
 
 ## Making a Trade ##
 The library allows to open an order for a market by either the ticker or it's id, the order type is specified by the constants BUY = 0 and SELL = 1, the amount in this example is 100 and for the price of $0.5.
