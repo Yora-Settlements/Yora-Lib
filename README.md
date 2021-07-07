@@ -9,6 +9,7 @@ The documentation for the Yora public API can be accessed [here](https://api.yor
 
 ## Getting Started ##
 To start using the wrapper library, simply create a new file in the root directory and import the Yora.py module and create an API object. 
+
 Note: In all following examples the name ```yora_api``` will be used to refer to the created API object.
 ```python
 import Yora
