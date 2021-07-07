@@ -6,7 +6,7 @@ The documentation for the Yora public API can be accessed [here](https://api.yor
 * [Wiki](https://github.com/Yora-Settlements/Yora-Lib#getting-started)
 * [Getting started](https://github.com/Yora-Settlements/Yora-Lib#getting-started)
 * [Make a trade](https://github.com/Yora-Settlements/Yora-Lib#make-a-trade)
-* 
+
 
 ## Getting Started ##
 To start using the wrapper library, simply create a new file in the root directory and import the Yora.py module and create an API object. 
