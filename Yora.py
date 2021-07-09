@@ -17,6 +17,7 @@ logging.basicConfig(
     filename = 'api.log'
 )
 
+
 class StatusCode(Enum):
     UNKNOWN_ERROR = 1
     CORRESPONDENCE_REQUIRED = 102
@@ -45,10 +46,8 @@ class StatusCode(Enum):
 class OrderType(Enum):
     BUY = 0
     SELL = 1
-
-class API:
-    # public interface
-
+    
+class Times(Enum):
     SEC = 1
     MIN = 60
     HOUR = 60 * MIN
@@ -57,8 +56,10 @@ class API:
     MONTH = 30 * DAY
     YEAR = 365 * DAY
     FOREVER = 200 * YEAR
+    
 
-
+class API:
+    # public interface
     def __init__(self, tkn):
         self.__tkn = tkn
 
