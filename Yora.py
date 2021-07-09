@@ -17,56 +17,56 @@ logging.basicConfig(
     filename = 'api.log'
 )
 
-
 class StatusCode(Enum):
-    unknown_error = 1
-    correspondence_required = 102
-    resource_not_found = 103
-    authentication_error = 1001
-    invalid_transaction = 1009
-    invalid_data = 1000
-    ok = 0
-    recaptcha_error = 1010
-    email_taken = 1003
-    missing_data = 1002
-    request_too_large = 1008
-    action_failed = 11
-    server_prevented_action = 104
-    transaction_did_not_settle = 105
-    maintenance = 1005
-    not_implemented = 1004
-    wrong_protocol = 100
-    invalid_action = 10
-    rate_limit = 101
-    insufficient_funds = 106
-    amount_to_small = 107
-    identity_not_verified = 1007
-    account_locked = 1006
+    UNKNOWN_ERROR = 1
+    CORRESPONDENCE_REQUIRED = 102
+    RESOURCE_NOT_FOUND = 103
+    AUTHENTICATION_ERROR = 1001
+    INVALID_TRANSACTION = 1009
+    INVALID_DATA = 1000
+    OK = 0
+    RECAPTCHA_ERROR = 1010
+    EMAIL_TAKEN = 1003
+    MISSING_DATA = 1002
+    REQUEST_TOO_LARGE = 1008
+    ACTION_FAILED = 11
+    SERVER_PREVENTED_ACTION = 104
+    TRANSACTION_DID_NOT_SETTLE = 105
+    MAINTENANCE = 1005
+    NOT_IMPLEMENTED = 1004
+    WRONG_PROTOCOL = 100
+    INVALID_ACTION = 10
+    RATE_LIMIT = 101
+    INSUFFICIENT_FUNDS = 106
+    AMOUNT_TO_SMALL = 107
+    IDENTITY_NOT_VERIFIED = 1007
+    ACCOUNT_LOCKED = 1006
     
 
 class TransactionTypes(Enum):
-    yora_credit = 15
-    basic = 0
-    depost = 16
-    deposit_pending = 11
-    donation = 6
-    transaction_failed = 14
-    payment = 1
-    refund = 13
-    trade_created = 2
-    trade = 5
-    trade_cancelled = 3
-    trade_failed = 4
-    withdrawl = 10
-    withdrawl_cancelled = 8
-    withdrawl_failed = 9
-    withdrawl_pending = 7
+    YORA_CREDIT = 15
+    BASIC = 0
+    DEPOST = 16
+    DEPOSIT_PENDING = 11
+    DONATION = 6
+    TRANSACTION_FAILED = 14
+    PAYMENT = 1
+    REFUND = 13
+    TRADE_CREATED = 2
+    TRADE = 5
+    TRADE_CANCELLED = 3
+    TRADE_FAILED = 4
+    WITHDRAWL = 10
+    WITHDRAWL_CANCELLED = 8
+    WITHDRAWL_FAILED = 9
+    WITHDRAWL_PENDING = 7
 
+class OrderType(Enum):
+    BUY = 0
+    SELL = 1
 
 class API:
     # public interface
-    BUY = 0
-    SELL = 1
 
     SEC = 1
     MIN = 60
@@ -78,26 +78,8 @@ class API:
     FOREVER = 200 * YEAR
 
 
-    def __init__(self, email, password, tfa_flag=False):    # logs the user in, set flag to 'True' to use 2fa login 
-        response = {}
-        if tfa_flag == False:
-            response = self.__login_user(email, password)
-            self.__check_http_code(response)
-            status_code = response.get('data').get('status_code')
-            if status_code != StatusCode.ok.value:
-                print('Returned status_code' + str(status_code) + ': ' + StatusCode(status_code).name)
-
-        elif tfa_flag == True:
-            response = self.__login_user_2fa(email, password)
-            self.__check_http_code(response)
-            status_code = response.get('data').get('status_code')
-            if status_code != StatusCode.ok.value:
-                print('Returned status_code' + str(status_code) + ': ' + StatusCode(status_code).name)
-
-
-        self.__tkn = response.get('data').get('response').get('token')
-        print(response)
-
+    def __init__(self, tkn):
+        self.__tkn = tkn
 
     def get_supported_currencies(self):                   
         """Get all the currencies of the Yora platform
@@ -113,7 +95,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
         
         currencies = {}
@@ -147,7 +129,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
         
         balances = {}
@@ -176,7 +158,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         markets = {}
@@ -214,7 +196,7 @@ class API:
             response = self.__get_market_orders(self.__tkn, market)
         elif isinstance(market, str):
             markets = self.get_markets()
-            if markets[0] != StatusCode.ok.value:
+            if markets[0] != StatusCode.OK.value:
                 return markets[0], None
             m_id = markets[1][market]['market_id']
             response = self.__get_market_orders(self.__tkn, m_id)
@@ -222,7 +204,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
   
         
@@ -250,7 +232,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
 
@@ -273,7 +255,7 @@ class API:
         market : str or int
             The ticker for the market, eg. 'GRC/AUD'
         direction : int or str
-            Whether the order is a buy or sell order specified by YoraLib.BUY, or YoraLib.SELL constants
+            Whether the order is a buy or sell order specified by Yora.BUY, or Yora.SELL Enum
         amount : float
             The amount of the currency to buy or sell
         price : float
@@ -293,15 +275,15 @@ class API:
             m_id = market
         elif isinstance(market, str):
             markets = self.get_markets()
-            if markets[0] != StatusCode.ok.value:
+            if markets[0] != StatusCode.OK.value:
                 return markets[0], None
             m_id = markets[1][market]['market_id']
 
-        response = self.__make_trade(self.__tkn, m_id, dirction, amount, price)
+        response = self.__make_trade(self.__tkn, m_id, dirct, amount, price)
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         return status_code, response.get('data').get('response')
@@ -325,7 +307,7 @@ class API:
         self.__check_http_code(response)
 
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code
 
 
@@ -349,7 +331,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         address = response.get('data').get('response').get('address')
@@ -377,7 +359,7 @@ class API:
             m_id = market
         elif isinstance(market, str):
             markets = self.get_markets()
-            if markets[0] != StatusCode.ok.value:
+            if markets[0] != StatusCode.OK.value:
                 return markets[0], None
             m_id = markets[1][market]['market_id']
         
@@ -385,7 +367,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
 
@@ -411,7 +393,7 @@ class API:
         self.__check_http_code(response)
 
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code
 
 
@@ -439,7 +421,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         return status_code, response.get('data').get('response').get('tx_id')
@@ -475,7 +457,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         return status_code, response.get('data').get('response').get('tx_id')
@@ -508,7 +490,7 @@ class API:
             m_id = market
         elif isinstance(market, str):
             markets = self.get_markets()
-            if markets[0] != StatusCode.ok.value:
+            if markets[0] != StatusCode.OK.value:
                 return markets[0], None
             m_id = markets[1][market]['market_id']
 
@@ -528,7 +510,7 @@ class API:
         self.__check_http_code(response)
         
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         candles = response.get('data').get('response').get('candles')
@@ -561,7 +543,7 @@ class API:
             m_id = market
         elif isinstance(market, str):
             markets = self.get_markets()
-            if markets[0] != StatusCode.ok.value:
+            if markets[0] != StatusCode.OK.value:
                 return markets[0], None
             m_id = markets[1][market]['market_id']
 
@@ -569,7 +551,7 @@ class API:
         self.__check_http_code(response)
 
         status_code = response.get('data').get('status_code')
-        if status_code != StatusCode.ok.value:
+        if status_code != StatusCode.OK.value:
             return status_code, None
 
         orders = response.get('data').get('response') 
@@ -593,25 +575,6 @@ class API:
 
     def __unixtime_to_datetime(ut):                         # helper
         return datetime.datetime.fromtimestamp(ut)
-
-
-    def __login_user(self, email, password):
-        data = {
-            'email' : email,
-            'password' : password,
-            'override_recaptcha' : 1                        # WARNING REMOVE THIS LATER
-        }
-        return caller.api_call_post('login', payload=data)
-
-
-    def __login_user_2fa(self, email, password):
-        data = {
-            'email' : email,
-            'password' : password,
-            '2fa' : int(input('2FA code: '))
-        }
-        return caller.api_call_post('login', payload=data)
-
 
     def __get_currencies(self, token):
         return caller.api_call_get('currency', payload={'token' : token})
