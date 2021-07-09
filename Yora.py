@@ -453,7 +453,7 @@ class API:
         market : str or int
             Enter the market id or the market name, eg. 'GRC/AUD'
         interval : int
-            The charts time interval, use the constants YoraLib.SEC, MIN, DAY, ...
+            The charts time interval, use the constants YoraLib.Times.SEC.value, MIN, DAY, ...
         from_time : str or int
             Enter a from time in either unix time or in date time format yyyy-mm-dd hh:mm:ss
         to_time : str or int
