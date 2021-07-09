@@ -42,25 +42,6 @@ class StatusCode(Enum):
     IDENTITY_NOT_VERIFIED = 1007
     ACCOUNT_LOCKED = 1006
     
-
-class TransactionType(Enum):
-    YORA_CREDIT = 15
-    BASIC = 0
-    DEPOSIT = 16
-    DEPOSIT_PENDING = 11
-    DONATION = 6
-    TRANSACTION_FAILED = 14
-    PAYMENT = 1
-    REFUND = 13
-    TRADE_CREATED = 2
-    TRADE = 5
-    TRADE_CANCELLED = 3
-    TRADE_FAILED = 4
-    WITHDRAWL = 10
-    WITHDRAWL_CANCELLED = 8
-    WITHDRAWL_FAILED = 9
-    WITHDRAWL_PENDING = 7
-
 class OrderType(Enum):
     BUY = 0
     SELL = 1
