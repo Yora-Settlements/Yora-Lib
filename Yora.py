@@ -43,7 +43,7 @@ class StatusCode(Enum):
     ACCOUNT_LOCKED = 1006
     
 
-class TransactionTypes(Enum):
+class TransactionType(Enum):
     YORA_CREDIT = 15
     BASIC = 0
     DEPOST = 16
