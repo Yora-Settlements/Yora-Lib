@@ -46,7 +46,7 @@ class StatusCode(Enum):
 class TransactionType(Enum):
     YORA_CREDIT = 15
     BASIC = 0
-    DEPOST = 16
+    DEPOSIT = 16
     DEPOSIT_PENDING = 11
     DONATION = 6
     TRANSACTION_FAILED = 14
