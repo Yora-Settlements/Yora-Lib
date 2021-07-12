@@ -409,7 +409,7 @@ class API:
         return status_code, response.get('data').get('response').get('tx_id')
 
 
-    def make_withdrawal_fiat(self, currency, amount, bsb, account_num, addressee, message=""):
+    def withdraw_fiat(self, currency, amount, bsb, account_num, addressee, message=""):
         """Withdraw fiat currency, eg. 'AUD' to a bank account
 
         Parameters
