@@ -502,6 +502,56 @@ class API:
         return status_code, candles       # indexed
 
 
+    def get_chart_at(self, market, interval, at_time, page=0):
+        """Gets the candle at a specific time
+
+        Parameters
+        ----------
+        market : str or int
+            Enter the market id or the market name, eg. 'GRC/AUD'
+        interval : int
+            The charts time interval, use the constants YoraLib.Times.SEC.value, MIN, DAY, ...
+        at_time : str or int
+            Enter a from time in either unix time or in date time format yyyy-mm-dd hh:mm:ss
+
+        Returns
+        -------
+        status_code : int
+            Status code of response, 0 on success
+        candles : dict or None
+            Indexed dictionary of candle sticks accessed by dictname[index]['info'] or dictname[index] to get the entire candle
+        """
+
+         m_id = 0
+        if isinstance(market, int):
+            m_id = market
+        elif isinstance(market, str):
+            markets = self.get_markets()
+            if markets[0] != StatusCode.OK.value:
+                return markets[0], None
+            m_id = markets[1][market]['market_id']
+
+        at = 0
+        if isinstance(at_time, int):
+            at = from_time
+        elif isinstance(at_time, str):
+            at = self.__datetime_to_unixtime(at_time)  
+
+        response = self.__get_chart(self.__tkn, m_id, interval, ft, tt, page)
+        self.__check_http_code(response)
+        
+        status_code = response.get('data').get('status_code')
+        if status_code != StatusCode.OK.value:
+            return status_code, None
+
+        candles = response.get('data').get('response').get('candles')
+        for i in range(len(candles)):
+            if self.__datetime_to_unixtime(candles.get(i).get('time') / 1000) == at:
+                return status_code, candles[i]
+            else:
+                return status_code, None
+
+
     def market_history(self, market, page=0):
         """Gets all previous orders on the market specified
 
