@@ -170,7 +170,7 @@ class API:
         status_code : int
             Status code of response, 0 on success
         orders : dict or None
-            Indexed dictionary of all the orders on the market (open and closed) accessed via dictname['buy'][ordernum]['info'] or dictname['sell'][ordernum]['info']
+            Indexed dictionary of all the orders on the market accessed via dictname['buy'][ordernum]['info'] or dictname['sell'][ordernum]['info']
         """
 
         response = {}
@@ -271,6 +271,67 @@ class API:
         return status_code, response.get('data').get('response')
 
 
+    def simple_buy(self, market, to_spend):
+        """Instantly buy or put a trade on market for a desired currency
+
+            Parameters
+            ----------
+            market : str or int
+                The ticker for the market, eg. 'GRC/AUD'
+            to_spend : float
+                The amount of money to spend on the purchase
+
+            Returns
+            -------
+            status_code : int
+                Status code of response, 0 on success
+            response : dict or None
+                Dictionary containing the trade ID and transaction ID accessed by dictname['trade_id'] or dictname['tx_id']
+            """
+
+        price_to_use = get_order_book(market)
+        price = price_to_use['sell'][0]['price']
+        amnt = to_spend / price
+
+        response = trade(market, OrderType.BUY.value, amnt, price)
+        
+        status_code = response[0]
+        if status_code != StatusCode.OK.value:
+            return status_code, None
+
+        return status_code, response[1]
+
+
+    def simple_sell(self, market, to_sell):
+        """Instantly sell or put a trade on market for a desired currency
+
+            Parameters
+            ----------
+            market : str or int
+                The ticker for the market, eg. 'GRC/AUD'
+            to_sell : float
+                The amount of the currency, eg. BTC, to sell
+
+            Returns
+            -------
+            status_code : int
+                Status code of response, 0 on success
+            response : dict or None
+                Dictionary containing the trade ID and transaction ID accessed by dictname['trade_id'] or dictname['tx_id']
+            """
+
+        price_to_use = get_order_book(market)
+        price = price_to_use['buy'][0]['price']
+
+        response = self.trade(market, OrderType.SELL.value, to_sell, price)
+        
+        status_code = response[0]
+        if status_code != StatusCode.OK.value:
+            return status_code, None
+
+        return status_code, response[1]
+
+
     def cancel_trade(self, trade_id):
         """Cancel an active trade
 
@@ -291,6 +352,8 @@ class API:
         status_code = response.get('data').get('status_code')
         if status_code != StatusCode.OK.value:
             return status_code
+
+        return status_code, response.get('data').get('response')
 
 
     def get_address(self, currency):
@@ -522,7 +585,7 @@ class API:
             Indexed dictionary of candle sticks accessed by dictname[index]['info'] or dictname[index] to get the entire candle
         """
 
-         m_id = 0
+        m_id = 0
         if isinstance(market, int):
             m_id = market
         elif isinstance(market, str):
@@ -607,6 +670,7 @@ class API:
 
     def __unixtime_to_datetime(ut):                         # helper
         return datetime.datetime.fromtimestamp(ut)
+
 
     def __get_currencies(self, token):
         return caller.api_call_get('currency', payload={'token' : token})
