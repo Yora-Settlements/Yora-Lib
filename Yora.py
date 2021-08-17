@@ -299,7 +299,7 @@ class API:
         if status_code != StatusCode.OK.value:
             return status_code, None
 
-        return status_code, response[1]
+        return status_code, response
 
 
     def simple_sell(self, market, to_sell):
@@ -329,7 +329,7 @@ class API:
         if status_code != StatusCode.OK.value:
             return status_code, None
 
-        return status_code, response[1]
+        return status_code, response
 
 
     def cancel_trade(self, trade_id):
