@@ -3,7 +3,7 @@ Yora Lib is an open-source wrapper library for the Yora Settlements trading API 
 
 The documentation for the Yora public API can be accessed [here](https://api.yora.tech/openapi).
 
-* [Wiki](https://github.com/Yora-Settlements/Yora-Lib/wiki/Yora-Lib)
+* [Wiki](https://github.com/Yora-Settlements/Yora-Lib/wiki/)
 * [Getting started](https://github.com/Yora-Settlements/Yora-Lib#getting-started)
 * [API Responses](https://github.com/Yora-Settlements/Yora-Lib#api-responses)
 * [Making a trade](https://github.com/Yora-Settlements/Yora-Lib#making-a-trade)
